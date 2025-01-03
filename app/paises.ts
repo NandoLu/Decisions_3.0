@@ -1,4 +1,3 @@
-// app/paises.ts
 import { ImageSourcePropType } from "react-native";
 
 export interface Lider {
@@ -8,6 +7,12 @@ export interface Lider {
   poder: number;
 }
 
+export interface ImpostoValores {
+  pobre: number;
+  medio: number;
+  rico: number;
+}
+
 export interface Pais {
   nome: string;
   PIB: number;
@@ -15,6 +20,7 @@ export interface Pais {
   bandeira: ImageSourcePropType;
   saldoEconomia: number; // Adiciona saldoEconomia aos atributos do país
   lideres: Lider[];
+  impostos: ImpostoValores; // Adiciona os valores dos sliders aos atributos do país
 }
 
 export const paises: Pais[] = [
@@ -28,6 +34,7 @@ export const paises: Pais[] = [
       { nome: "Getúlio Vargas", foto: require("../assets/img/vargas.png"), ano: 1930, poder: 10 },
       { nome: "Juscelino Kubitschek", foto: require("../assets/img/jk.png"), ano: 1956, poder: 10 },
     ],
+    impostos: { pobre: 1, medio: 0, rico: 1 } // Valores de exemplo
   },
   {
     nome: "URSS",
@@ -39,6 +46,7 @@ export const paises: Pais[] = [
       { nome: "Vladimir Lenin", foto: require("../assets/img/lenin.png"), ano: 1917, poder: 10 },
       { nome: "Joseph Stalin", foto: require("../assets/img/stalin.png"), ano: 1924, poder: 10 },
     ],
+    impostos: { pobre: 0, medio: 10, rico: 0 } // Valores de exemplo
   },
   // Adicione mais países e líderes futuramente
 ];

@@ -1,4 +1,3 @@
-// app/screens/ModalsJogo/BotoesJogo.tsx
 import React, { useState } from "react";
 import { View, TouchableOpacity, Image, Text } from "react-native";
 import { styles } from "../../../styles/BotoesJogo";
@@ -10,10 +9,11 @@ interface BotoesJogoProps {
   avancarTurno: () => void;
   poder: number;
   atualizarPoder: (novoPoder: number) => void;
-  atualizarCustoPoder: (novoCusto: number) => void; // Adiciona a nova propriedade
+  atualizarCustoPoder: (novoCusto: number) => void;
+  atualizarReceitaImposto: (novaReceita: number) => void; // Adiciona a nova propriedade
 }
 
-export default function BotoesJogo({ bloqueado, setBloqueado, avancarTurno, poder, atualizarPoder, atualizarCustoPoder }: BotoesJogoProps) {
+export default function BotoesJogo({ bloqueado, setBloqueado, avancarTurno, poder, atualizarPoder, atualizarCustoPoder, atualizarReceitaImposto }: BotoesJogoProps) {
   const [impostoModalVisible, setImpostoModalVisible] = useState(false);
 
   const openImpostoModal = () => {
@@ -25,8 +25,9 @@ export default function BotoesJogo({ bloqueado, setBloqueado, avancarTurno, pode
   };
 
   // Atualize aqui a função saveImpostoConfig para desabilitar os sliders
-  const saveImpostoConfig = (impostos: { pobre: number; medio: number; rico: number }) => {
+  const saveImpostoConfig = (impostos: { pobre: number; medio: number; rico: number }, receitaImposto: number) => {
     setBloqueado(true); // Bloqueia os sliders após salvar
+    atualizarReceitaImposto(receitaImposto); // Atualiza a receita do imposto
     avancarTurno(); // Avança o turno
   };
 
@@ -69,7 +70,7 @@ export default function BotoesJogo({ bloqueado, setBloqueado, avancarTurno, pode
         avancarTurno={avancarTurno} 
         poder={poder} 
         atualizarPoder={atualizarPoder}
-        atualizarCustoPoder={atualizarCustoPoder} // Passa a nova propriedade
+        atualizarCustoPoder={atualizarCustoPoder} 
       />
     </View>
   );

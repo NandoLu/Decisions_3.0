@@ -1,4 +1,3 @@
-// app/NovoJogo.tsx
 import React, { useState } from "react";
 import { View, Text, Image, Button } from "react-native";
 import { useRouter } from "expo-router";
@@ -16,18 +15,31 @@ export default function NovoJogo() {
     if (paisSelecionado && liderSelecionado) {
       // Limpa o armazenamento anterior
       await AsyncStorage.removeItem('jogoAtual');
+      await AsyncStorage.removeItem('receitaImposto');
+      await AsyncStorage.removeItem('impostos');
 
-      // Salva o novo jogo com saldoEconomia e popularidade inicializados
+      // Salva o novo jogo com os valores do país escolhido
       await AsyncStorage.setItem('jogoAtual', JSON.stringify({
         pais: paisSelecionado,
         lider: liderSelecionado,
-        saldoEconomia: 1000, // Valor inicial, ajuste conforme necessário
-       // Valor inicial, ajuste conforme necessário
+        saldoEconomia: paisSelecionado.saldoEconomia, // Valor inicial do país escolhido
+        popularidade: 50, // Valor inicial, ajuste conforme necessário
+        poder: liderSelecionado.poder, // Valor inicial do líder escolhido
+        impostos: paisSelecionado.impostos // Valores dos sliders do país escolhido
       }));
+
+      // Salva a receita de impostos inicial
+      const receitaImposto = calcularReceitaImposto(paisSelecionado.impostos);
+      await AsyncStorage.setItem('receitaImposto', JSON.stringify(receitaImposto));
 
       // Navega para a tela do jogo
       router.push('./screens/Jogo');
     }
+  };
+
+  const calcularReceitaImposto = (impostos: { pobre: number; medio: number; rico: number }) => {
+    // Função para calcular a receita de impostos com base nos valores dos sliders
+    return impostos.pobre * 3 + impostos.medio * 5 + impostos.rico * 8; // Exemplo de cálculo, ajuste conforme necessário
   };
 
   return (

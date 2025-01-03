@@ -8,7 +8,7 @@ import { calcularCustoPoder, calcularReceitaImposto, calcularStatusSalvar } from
 interface ImpostoModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (impostos: { pobre: number; medio: number; rico: number }) => void;
+  onSave: (impostos: { pobre: number; medio: number; rico: number }, receitaImposto: number) => void;
   bloqueado: boolean;
   avancarTurno: () => void;
   poder: number;
@@ -41,24 +41,39 @@ const ImpostoModal: React.FC<ImpostoModalProps> = ({
   const [receitaImposto, setReceitaImposto] = useState<number>(0);
 
   useEffect(() => {
-    if (visible) {
-      const loadImpostos = async () => {
-        const impostos = await AsyncStorage.getItem('impostos');
-        if (impostos) {
-          const parsedImpostos = JSON.parse(impostos);
+    const loadImpostos = async () => {
+      try {
+        const savedImpostos = await AsyncStorage.getItem('impostos');
+        if (savedImpostos) {
+          const parsedImpostos: ImpostoValores = JSON.parse(savedImpostos);
           setImposto(parsedImpostos);
           setTempImposto(parsedImpostos);
+        } else {
+          const data = await AsyncStorage.getItem('jogoAtual');
+          if (data) {
+            const jogo = JSON.parse(data);
+            setImposto(jogo.impostos);
+            setTempImposto(jogo.impostos);
+          }
         }
-      };
+      } catch (error) {
+        console.error("Erro ao carregar os impostos do AsyncStorage", error);
+      }
+    };
+
+    if (visible) {
       loadImpostos();
-      setIsSaveDisabled(true);
-      setCustoPoder(0);
+    } else {
+      // Restaura os valores originais dos sliders ao fechar o modal
+      setTempImposto(imposto);
+      setCustoPoder(0); // Cancela o custo de poder ao fechar
+      atualizarCustoPoder(0); // Atualiza o custo de poder para 0 externamente
     }
   }, [visible]);
 
   useEffect(() => {
-    const custo = calcularCustoPoder(tempImposto, imposto);  // Utiliza a função de cálculo
-    const receita = calcularReceitaImposto(tempImposto);  // Utiliza a função de cálculo
+    const custo = calcularCustoPoder(tempImposto, imposto);
+    const receita = calcularReceitaImposto(tempImposto);
 
     if (custo !== custoPoder) {
       setCustoPoder(custo);
@@ -69,11 +84,11 @@ const ImpostoModal: React.FC<ImpostoModalProps> = ({
       setReceitaImposto(receita);
     }
 
-    const isDisabled = calcularStatusSalvar(custo, poder);  // Utiliza a função de cálculo
+    const isDisabled = calcularStatusSalvar(custo, poder);
     if (isDisabled !== isSaveDisabled) {
       setIsSaveDisabled(isDisabled);
     }
-  }, [tempImposto, imposto, poder, custoPoder, receitaImposto, atualizarCustoPoder]);
+  }, [tempImposto, imposto, custoPoder, receitaImposto, poder]);
 
   const handleSliderChange = (value: number, type: ImpostoTipos) => {
     setTempImposto((prev) => ({ ...prev, [type]: value }));
@@ -83,7 +98,7 @@ const ImpostoModal: React.FC<ImpostoModalProps> = ({
     if (custoPoder <= poder) {
       atualizarPoder(poder - custoPoder);
       setImposto(tempImposto);
-      onSave(tempImposto);
+      onSave(tempImposto, receitaImposto);
       await AsyncStorage.setItem('impostos', JSON.stringify(tempImposto));
       avancarTurno();
       setIsSliderDisabled(true);

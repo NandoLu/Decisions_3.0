@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
   },
   custoPoderText:{
-    color: "black",
+    color: "",
     fontSize: 14,
   },
   buttonText: {

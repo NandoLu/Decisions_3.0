@@ -6,7 +6,7 @@ const meses = [
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
 ];
 
-export const logicaAvancar = (jogoInfo: JogoInfo, custoPoder: number): JogoInfo => {
+export const logicaAvancar = (jogoInfo: JogoInfo, custoPoder: number, receitaImposto: number): JogoInfo => {
   let { lider, pais } = jogoInfo;
   let ano = lider.ano;
   let mes: number = jogoInfo.mes ?? 0; // Inicia em Janeiro caso não tenha valor
@@ -19,10 +19,13 @@ export const logicaAvancar = (jogoInfo: JogoInfo, custoPoder: number): JogoInfo 
   }
 
   // Defina as variáveis de economia e popularidade
-  const receitaTotalEconomia = 1000; // Exemplo de valor, ajuste conforme necessário
-  const despesaTotalEconomia = 500; // Exemplo de valor, ajuste conforme necessário
+  const receitaTotalEconomia = receitaImposto; // Ajuste para incluir receitaImposto
+  const despesaTotalEconomia = 0; // Exemplo de valor, ajuste conforme necessário
   const saldoEconomia = (jogoInfo.saldoEconomia || pais.saldoEconomia) + receitaTotalEconomia - despesaTotalEconomia;
-  const popularidade = jogoInfo.popularidade ?? 50; // Inicializa popularidade em 50 se não estiver definido
+
+  const ganhoPopularidade = 0; // Exemplo de valor, ajuste conforme necessário
+  const perdaPopularidade = 0; // Exemplo de valor, ajuste conforme necessário
+  const popularidade = (jogoInfo.popularidade ?? 50) + ganhoPopularidade - perdaPopularidade;
 
   // Define o incremento de poder com base na popularidade
   let incrementoPoder;

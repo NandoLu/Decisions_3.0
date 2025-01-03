@@ -7,6 +7,7 @@ interface ImpostoValores {
   }
   
   // Função para calcular o custo de poder
+  
   export const calcularCustoPoder = (tempImposto: ImpostoValores, imposto: ImpostoValores): number => {
     return Math.abs(tempImposto.pobre - imposto.pobre) +
            Math.abs(tempImposto.medio - imposto.medio) +
